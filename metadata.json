@@ -1,0 +1,5 @@
+{
+  "name": "COVID-19 Severity Assessor",
+  "description": "AI-assisted scoring for COVID-19 severity using Chest X-rays based on a 6-zone scoring system.",
+  "requestFramePermissions": []
+}
