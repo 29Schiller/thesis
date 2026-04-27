@@ -24,7 +24,9 @@ export function UploadView({ onProcess, isProcessing, batchProgress }: UploadVie
     onDrop,
     accept: {
       'image/*': ['.png', '.jpg', '.jpeg', '.dcm'],
-      'application/zip': ['.zip', '.x-zip-compressed']
+      'application/zip': ['.zip'],
+      'application/x-zip-compressed': ['.zip'],
+      'application/octet-stream': ['.zip']
     },
     disabled: isProcessing
   } as unknown as import('react-dropzone').DropzoneOptions);

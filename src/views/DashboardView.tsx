@@ -56,41 +56,42 @@ export function DashboardView() {
       setBatchProgress({ current: 0, total: imagesToProcess.length });
       const results: PredictionResult[] = [];
 
-      // Check backend alive (first image only)
-      if (i === 0) {
-        const alive = await checkHealth();
-        if (!alive) throw new Error('Backend unreachable. Check FastAPI + ngrok.');
+      // Health check before first image
+      const alive = await checkHealth();
+      if (!alive) throw new Error('Backend unreachable. Check FastAPI + ngrok.');
+
+      for (let i = 0; i < imagesToProcess.length; i++) {
+        const data = await analyzeImage(imagesToProcess[i], modelId);
+
+        const result: PredictionResult = {
+          id: uuidv4(),
+          patient_id: `ANON-${Math.floor(10000 + Math.random() * 90000)}`,
+          study_date: new Date().toISOString().split('T')[0],
+          image_url: data.result_image_b64,
+          severity_score: data.severity_score,
+          zone_scores: { L_upper: 0, L_middle: 0, L_lower: 0, R_upper: 0, R_middle: 0, R_lower: 0 },
+          statistics: { total_lung_pixels: 0, disease_pixels: 0, involvement_percentage: 0 },
+          confidence: 1.0,
+          processing_time_ms: 0,
+          model_used: modelId,
+          created_at: new Date().toISOString(),
+        };
+
+        results.push(result);
+        mockApi.saveToHistory(result);
+        setBatchProgress({ current: i + 1, total: imagesToProcess.length });
       }
-
-      const data = await analyzeImage(imagesToProcess[i], modelId);
-
-      // Map backend response → PredictionResult shape
-      const result: PredictionResult = {
-        id: uuidv4(),
-        patient_id: `ANON-${Math.floor(10000 + Math.random() * 90000)}`,
-        study_date: new Date().toISOString().split('T')[0],
-        image_url: data.result_image_b64,          // overlay image from backend
-        severity_score: data.severity_score,
-        zone_scores: { L_upper:0, L_middle:0, L_lower:0, R_upper:0, R_middle:0, R_lower:0 },
-        statistics: { total_lung_pixels: 0, disease_pixels: 0, involvement_percentage: 0 },
-        confidence: 1.0,
-        processing_time_ms: 0,
-        model_used: modelId,
-        created_at: new Date().toISOString(),
-      };
-      mockApi.saveToHistory(result);
 
       setHistory(mockApi.getHistory());
-      
-      if (results.length === 1) {
-         setActiveResult(results[0]);
-         setCurrentView('result');
-      } else {
-         // Export CSV for batch
-         exportToCSV(results);
-         setCurrentView('history');
-      }
 
+      if (results.length === 1) {
+        setActiveResult(results[0]);
+        setCurrentView('result');
+      } else {
+        exportToCSV(results);
+        setCurrentView('history');
+      }
+      
     } catch (error) {
       console.error("Processing failed", error);
       alert("Failed to process files. Please try again.");
