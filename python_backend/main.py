@@ -1,33 +1,29 @@
 import sys
 import os
-import io
 import base64
 import torch
 import cv2
 import numpy as np
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
 
-# Khai báo đường dẫn để import được từ thư mục tools
 current_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = current_dir # Giả sử main.py nằm ở root của project python
+project_root = os.path.dirname(current_dir)   # ← lên 1 cấp = root_folder
+
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 # Import các hàm từ tools
-try:
-    from tools.utils import (
-        preprocess_single_image,
-        predict_mask,
-        get_lung_roi,
-        map_mask_to_original,
-        apply_mode_visualization,
-        calculate_regional_severity
-    )
-    from tools.models import load_model_by_stage
-except ImportError as e:
-    print(f"Warning: Could not import tools. Make sure 'tools' folder is in the same directory. Error: {e}")
+import base64
+import torch
+import cv2
+import numpy as np
+from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+
+from tools.utils import *
+from tools.models import *
+from tools.data_processing import *
 
 app = FastAPI(title="Lung & Disease Segmentation API", version="1.0")
 
@@ -55,8 +51,9 @@ lung_model_cache = {}
 @app.on_event("startup")
 async def startup_event():
     print(f"Loading models on device: {device}")
+    print(f"Project root: {project_root}")
     lung_model_cache["s1_DeepLabV3plus"] = load_model_by_stage(1, "DeepLabV3plus", device, project_root)
-    lung_model_cache["s2_Unet"] = load_model_by_stage(2, "Unet", device, project_root)
+    lung_model_cache["s2_Unet"]          = load_model_by_stage(2, "Unet",          device, project_root)
     print("Models loaded.")
 
 
