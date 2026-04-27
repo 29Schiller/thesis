@@ -1,3 +1,6 @@
+import { analyzeImage, checkHealth } from '../services/realApi';
+import { v4 as uuidv4 } from 'uuid';
+z
 import { useState, useEffect } from 'react';
 import JSZip from 'jszip';
 import { Sidebar, type ViewType } from '../components/Sidebar';
@@ -54,11 +57,29 @@ export function DashboardView() {
       setBatchProgress({ current: 0, total: imagesToProcess.length });
       const results: PredictionResult[] = [];
 
-      for (let i = 0; i < imagesToProcess.length; i++) {
-         const result = await mockApi.processImage(imagesToProcess[i], modelId);
-         results.push(result);
-         setBatchProgress({ current: i + 1, total: imagesToProcess.length });
+      // Check backend alive (first image only)
+      if (i === 0) {
+        const alive = await checkHealth();
+        if (!alive) throw new Error('Backend unreachable. Check FastAPI + ngrok.');
       }
+
+      const data = await analyzeImage(imagesToProcess[i], modelId);
+
+      // Map backend response → PredictionResult shape
+      const result: PredictionResult = {
+        id: uuidv4(),
+        patient_id: `ANON-${Math.floor(10000 + Math.random() * 90000)}`,
+        study_date: new Date().toISOString().split('T')[0],
+        image_url: data.result_image_b64,          // overlay image from backend
+        severity_score: data.severity_score,
+        zone_scores: { L_upper:0, L_middle:0, L_lower:0, R_upper:0, R_middle:0, R_lower:0 },
+        statistics: { total_lung_pixels: 0, disease_pixels: 0, involvement_percentage: 0 },
+        confidence: 1.0,
+        processing_time_ms: 0,
+        model_used: modelId,
+        created_at: new Date().toISOString(),
+      };
+      mockApi.saveToHistory(result);
 
       setHistory(mockApi.getHistory());
       

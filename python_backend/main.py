@@ -46,9 +46,16 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # --- KHOẢNG MẠCH LOAD MODEL SẴN LÊN RAM ---
 # Ghi chú: Để tối ưu, bạn có thể load model lên RAM/VRAM ngay tại đây 
 # thay vì load lại mỗi lần call API.
-# Ví dụ: 
-# model_s1, conf_s1 = load_model_by_stage(1, "DeepLabV3plus", device, project_root)
-# model_s2, conf_s2 = load_model_by_stage(2, "Unet", device, project_root)
+# Replace the commented-out block near the top with:
+lung_model_cache = {}
+
+@app.lifespan("startup")
+async def startup_event():
+    print(f"Loading models on device: {device}")
+    lung_model_cache["s1_DeepLabV3plus"] = load_model_by_stage(1, "DeepLabV3plus", device, project_root)
+    lung_model_cache["s2_Unet"] = load_model_by_stage(2, "Unet", device, project_root)
+    print("Models loaded.")
+
 
 @app.get("/")
 def read_root():
@@ -74,8 +81,12 @@ async def analyze_image(
 
         # 2. Load Model (Khuyến cáo: nên đưa ra Global thay vì tạo mỗi request)
         try:
-            model_s1, conf_s1 = load_model_by_stage(1, model_s1_name, device, project_root)
-            model_s2, conf_s2 = load_model_by_stage(2, model_s2_name, device, project_root)
+            key_s1 = f"s1_{model_s1_name}"
+            key_s2 = f"s2_{model_s2_name}"
+            if key_s1 not in lung_model_cache or key_s2 not in lung_model_cache:
+                raise HTTPException(status_code=400, detail=f"Model not preloaded: {model_s1_name} / {model_s2_name}")
+            model_s1, conf_s1 = lung_model_cache[key_s1]
+            model_s2, conf_s2 = lung_model_cache[key_s2]
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Model error: {str(e)}")
 
