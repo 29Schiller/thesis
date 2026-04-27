@@ -1,6 +1,5 @@
 import { analyzeImage, checkHealth } from '../services/realApi';
 import { v4 as uuidv4 } from 'uuid';
-z
 import { useState, useEffect } from 'react';
 import JSZip from 'jszip';
 import { Sidebar, type ViewType } from '../components/Sidebar';

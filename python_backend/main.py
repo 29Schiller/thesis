@@ -34,7 +34,10 @@ app = FastAPI(title="Lung & Disease Segmentation API", version="1.0")
 # Cấu hình CORS để Frontend (React/Vite) có thể gọi API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Thay đổi thành URL của frontend trong production
+    allow_origins=[
+        "https://thesis-gules-theta.vercel.app/",  # ← replace with real Vercel URL
+        "http://localhost:3000",
+    ], # Thay đổi thành URL của frontend trong production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -49,7 +52,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # Replace the commented-out block near the top with:
 lung_model_cache = {}
 
-@app.lifespan("startup")
+@app.on_event("startup")
 async def startup_event():
     print(f"Loading models on device: {device}")
     lung_model_cache["s1_DeepLabV3plus"] = load_model_by_stage(1, "DeepLabV3plus", device, project_root)
