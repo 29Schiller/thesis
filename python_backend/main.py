@@ -124,11 +124,26 @@ async def analyze_image(
         _, buffer = cv2.imencode('.jpg', res_viz)
         img_b64 = base64.b64encode(buffer).decode('utf-8')
 
+        # Add this helper function before the endpoint:
+        def to_python(obj):
+            """Recursively convert numpy types to native Python types."""
+            import numpy as np
+            if isinstance(obj, np.integer):
+                return int(obj)
+            if isinstance(obj, np.floating):
+                return float(obj)
+            if isinstance(obj, np.ndarray):
+                return obj.tolist()
+            if isinstance(obj, (list, tuple)):
+                return [to_python(x) for x in obj]
+            return obj
+        
         return {
             "status": "success",
-            "severity_score": severity_score,
-            "zone_ratios": zone_ratios,
-            "metrics": {"lung_bbox": bbox},
+            "severity_score": int(severity_score),          # numpy.int64 → int
+            "metrics": {
+                "lung_bbox": to_python(bbox),               # tuple of numpy.int64 → list of int
+            },
             "result_image_b64": f"data:image/jpeg;base64,{img_b64}"
         }
 
