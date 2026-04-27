@@ -25,8 +25,14 @@ Chúng tôi đã chuẩn bị sẵn file `Dockerfile` trong thư mục `python_b
 4. Kết nối với GitHub và chọn Repository của bạn.
 5. Cấu hình Web Service:
    - **Root Directory:** `python_backend`
-   - **Environment:** `Docker` (Render sẽ tự động đọc `Dockerfile` trong thư mục này)
-   - Chọn gói (Free hoặc Paid). 
+   - Phụ thuộc vào tùy chọn **Environment** của bạn:
+     - **Cách A - Dùng Python Native (Dễ nhất):**
+       - **Environment:** `Python 3`
+       - **Build Command:** `pip install -r requirements.txt`
+       - **Start Command:** `uvicorn main:app --host 0.0.0.0 --port $PORT`
+     - **Cách B - Dùng Docker (Tùy chọn nâng cao):**
+       - **Environment:** `Docker` (Render sẽ tự động đọc `Dockerfile`, do đó hãy **để trống phần Start command**).
+   - Thiết lập các resource: Chọn gói (Free hoặc Paid). 
    *Lưu ý:* Gói Free của Render chỉ có 512MB RAM, đôi khi khi load PyTorch vào sẽ bị out-of-memory. Khuyên dùng gói có ít nhất 2GB - 4GB RAM cho xử lý AI ảnh.
 6. Ấn **"Create Web Service"**.
 7. Chờ hệ thống build image và chạy. Sau khi thành công, Render sẽ cung cấp URL (vd: `https://my-backend.onrender.com`). Lưu URL này lại.
@@ -43,6 +49,39 @@ Chúng tôi đã chuẩn bị sẵn file `Dockerfile` trong thư mục `python_b
    gcloud run deploy cxr-backend --image gcr.io/PROJECT_ID/cxr-backend --platform managed --memory 4Gi --allow-unauthenticated
    ```
 5. Nhận và lưu lại Backend API URL trả về.
+
+### Phương án 3: Chạy Backend Local và Expose qua Ngrok (Dùng để Test với Vercel)
+Nếu bạn không muốn thuê server hay chờ setup Docker, bạn có thể chạy backend trực tiếp trên máy tính cá nhân và dùng **ngrok** để mở (expose) API ra ngoài internet. Vercel Frontend sẽ gọi về máy tính của bạn.
+
+> ⚠️ **Lưu ý quan trọng:** Phương án này yêu cầu máy tính của bạn **PHẢI LUÔN BẬT** và **ĐANG CHẠY NGROK**. Nếu bạn tắt máy, app trên Vercel sẽ không gọi được API.
+
+1. **Chạy Backend trên máy của bạn:**
+   Mở terminal tại thư mục `python_backend/` và chạy server ở port 8000:
+   ```bash
+   uvicorn main:app --host 0.0.0.0 --port 8000
+   ```
+2. **Cài đặt và chạy Ngrok:**
+   - Đăng ký và cài đặt [ngrok](https://ngrok.com/).
+   - Mở một terminal khác và chạy lệnh để map port 8000:
+     ```bash
+     ngrok http 8000
+     ```
+3. **Lấy URL Public:**
+   ngrok sẽ hiển thị một URL dạng `https://<random-id>.ngrok-free.app`. Hãy copy URL này.
+4. **Xử lý lỗi chặn ngrok ở trình duyệt (BẮT BUỘC):**
+   Ngrok free thường chặn các request API bằng trang cảnh báo (browser warning). Để Frontend Vercel vượt qua trang này, bạn CẦN cập nhật code fecth API trên frontend để thêm header `ngrok-skip-browser-warning`. 
+
+   Ví dụ ở file API Frontend của bạn:
+   ```typescript
+   const response = await fetch(`${API_BASE_URL}/api/analyze`, {
+       method: "POST",
+       body: formData,
+       headers: {
+           // Bắt buộc nếu dùng ngrok để vượt qua trang chặn
+           "ngrok-skip-browser-warning": "69420"
+       }
+   });
+   ```
 
 ---
 
@@ -65,7 +104,10 @@ export async function uploadImageToAI(file: File) {
     
     const response = await fetch(`${API_BASE_URL}/api/analyze`, {
         method: "POST",
-        body: formData
+        body: formData,
+        headers: {
+            "ngrok-skip-browser-warning": "69420" // Bypass trang chặn của ngrok
+        }
     });
     return response.json();
 }
