@@ -213,10 +213,16 @@ def _draw_infobox(ax, ratios, total_score, threshold, sri, best_mae, subset, mod
         f"SRI Note  : {note_str}",
     ]
 
+    # Compute per-zone d_i for uncertainty flagging
+    def _di(r, t):
+        md = (1.0 - t) if r >= t else t
+        return abs(r - t) / md if md > 1e-8 else 1.0
+
     right_lines = ["Region Ratios:", ""]
     for i, r in enumerate(ratios):
         mark = "[+1]" if r >= threshold else "[ 0]"
-        right_lines.append(f"  {ZONE_LABELS[i]}: {r * 100:5.1f}%  {mark}")
+        flag = " !" if _di(r, threshold) < 0.10 else "  "
+        right_lines.append(f"  {ZONE_LABELS[i]}: {r * 100:5.1f}%  {mark}{flag}")
 
     box_style = dict(facecolor='black', alpha=0.72, edgecolor='white', pad=6)
 

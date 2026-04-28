@@ -143,7 +143,9 @@ export function ResultView({ result, onBack }: ResultViewProps) {
                <span className={severityColor}>{totalScore.toFixed(1)}</span><span className="text-xl font-normal opacity-50">/6.0</span>
             </div>
             {result.uncertainty !== undefined && (
-              <p className="text-[10px] text-slate-400 font-mono mb-2">Uncertainty: ±{result.uncertainty} (Std Dev)</p>
+              <p className="text-[10px] text-slate-400 font-mono mb-2">
+                Score Reliability Index (SRI): {result.uncertainty}
+              </p>
             )}
             <p className="text-xs text-slate-400">Classification: <span className={cn("font-semibold", severityColor)}>{severityLabel} COVID-19</span></p>
           </div>
@@ -194,13 +196,13 @@ export function ResultView({ result, onBack }: ResultViewProps) {
                  <div className="pt-4 border-t border-slate-800">
                     <div className="grid grid-cols-2 gap-x-8 gap-y-4">
                       <div className="space-y-2">
-                        <div className="text-[10px] font-semibold text-slate-500 uppercase border-b border-slate-800 pb-1 flex justify-between">Right <span>{result.zone_scores.R_upper + result.zone_scores.R_middle + result.zone_scores.R_lower}</span></div>
+                        <div className="text-[10px] font-semibold text-slate-500 uppercase border-b border-slate-800 pb-1 flex justify-between">Right <span>{((result.zone_scores.R_upper + result.zone_scores.R_middle + result.zone_scores.R_lower)/3 * 100).toFixed(1)}% Avg</span></div>
                         <ZoneItem name="Upper" score={result.zone_scores.R_upper} />
                         <ZoneItem name="Middle" score={result.zone_scores.R_middle} />
                         <ZoneItem name="Lower" score={result.zone_scores.R_lower} />
                       </div>
                       <div className="space-y-2">
-                         <div className="text-[10px] font-semibold text-slate-500 uppercase border-b border-slate-800 pb-1 flex justify-between">Left <span>{result.zone_scores.L_upper + result.zone_scores.L_middle + result.zone_scores.L_lower}</span></div>
+                         <div className="text-[10px] font-semibold text-slate-500 uppercase border-b border-slate-800 pb-1 flex justify-between">Left <span>{((result.zone_scores.L_upper + result.zone_scores.L_middle + result.zone_scores.L_lower)/3 * 100).toFixed(1)}% Avg</span></div>
                         <ZoneItem name="Upper" score={result.zone_scores.L_upper} />
                         <ZoneItem name="Middle" score={result.zone_scores.L_middle} />
                         <ZoneItem name="Lower" score={result.zone_scores.L_lower} />
@@ -225,10 +227,10 @@ function ZoneItem({ name, score }: { name: string; score: number }) {
     <div className="flex justify-between items-center group cursor-default">
       <span className="text-[10px] font-medium text-slate-400">{name}</span>
       <span className={cn(
-        "w-5 h-5 rounded flex items-center justify-center text-[10px] font-bold font-mono transition-colors",
-        score > 0 ? "bg-rose-500/20 text-rose-400 border border-rose-500/30" : "bg-slate-950 text-slate-600 border border-slate-800"
+        "px-1.5 py-0.5 rounded flex items-center justify-center text-[10px] font-bold font-mono transition-colors",
+        score > 0.25 ? "bg-rose-500/20 text-rose-400 border border-rose-500/30" : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
       )}>
-        {score}
+        {(score * 100).toFixed(1)}%
       </span>
     </div>
   )

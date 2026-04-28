@@ -73,23 +73,46 @@ async def analyze_image(
 
         key_s1 = f"s1_{model_s1_name}"
         key_s2 = f"s2_{model_s2_name}"
-        if key_s1 not in lung_model_cache or key_s2 not in lung_model_cache:
-            raise HTTPException(status_code=400, detail=f"Model not loaded: {key_s1} / {key_s2}")
+        if key_s1 not in lung_model_cache:
+            raise HTTPException(status_code=400, detail=f"Model not loaded: {key_s1}")
+        if model_s2_name != "Ensemble" and key_s2 not in lung_model_cache:
+            raise HTTPException(status_code=400, detail=f"Model not loaded: {key_s2}")
 
         model_s1, conf_s1 = lung_model_cache[key_s1]
-        model_s2, conf_s2 = lung_model_cache[key_s2]
+        
+        if model_s2_name != "Ensemble":
+            model_s2, conf_s2 = lung_model_cache[key_s2]
 
         # Stage 1
         roi_img, bbox, lung_mask_full = get_lung_roi(original_image, model_s1, conf_s1, device)
         if roi_img is None:
             raise HTTPException(status_code=400, detail="Stage 1: lungs not detected")
 
-        # Stage 2 — fix (w, h) order
-        s2_size = tuple(conf_s2.get('input_size', [512, 512]))
-        tensor_roi = preprocess_single_image(roi_img, target_size=s2_size).to(device)
-        roi_h = bbox[1] - bbox[0] + 1
-        roi_w = bbox[3] - bbox[2] + 1
-        roi_disease_mask = predict_mask(model_s2, tensor_roi, original_size=(roi_w, roi_h))
+        if model_s2_name == "Ensemble":
+            # load all 4 models and run ensemble
+            s2_names = ["Unet", "MANet", "FPN", "PSPNet"]
+            avg_prob_map = None
+            
+            s2_size = tuple(lung_model_cache["s2_Unet"][1].get('input_size', [512, 512]))
+            tensor_roi = preprocess_single_image(roi_img, target_size=s2_size).to(device)
+            roi_h = bbox[1] - bbox[0] + 1
+            roi_w = bbox[3] - bbox[2] + 1
+
+            for name in s2_names:
+                model_s2, conf_s2 = lung_model_cache[f"s2_{name}"]
+                prob_map = predict_prob_map(model_s2, tensor_roi, original_size=(roi_w, roi_h))
+                if avg_prob_map is None:
+                    avg_prob_map = prob_map / len(s2_names)
+                else:
+                    avg_prob_map += prob_map / len(s2_names)
+            
+            roi_disease_mask = (avg_prob_map > 0.5).astype(np.uint8)
+        else:
+            s2_size = tuple(conf_s2.get('input_size', [512, 512]))
+            tensor_roi = preprocess_single_image(roi_img, target_size=s2_size).to(device)
+            roi_h = bbox[1] - bbox[0] + 1
+            roi_w = bbox[3] - bbox[2] + 1
+            roi_disease_mask = predict_mask(model_s2, tensor_roi, original_size=(roi_w, roi_h))
 
         # Map back to full image
         full_disease_mask = map_mask_to_original(roi_disease_mask, bbox, (h_orig, w_orig))
@@ -112,6 +135,9 @@ async def analyze_image(
             return sum(1 for r in ratios if r >= threshold), ratios
         
         severity_score, zone_ratios = calculate_severity(lung_mask_full, full_disease_mask)
+        
+        # Calculate SRI
+        sri = compute_sri(zone_ratios, threshold=0.25)
 
         # Visualization (matches Inference.py)
         res_viz = original_image.copy()
@@ -142,7 +168,9 @@ async def analyze_image(
             "status": "success",
             "severity_score": int(severity_score),          # numpy.int64 → int
             "metrics": {
-                "lung_bbox": to_python(bbox),               # tuple of numpy.int64 → list of int
+                "lung_bbox": to_python(bbox),
+                "zone_ratios": zone_ratios,
+                "sri": float(sri)
             },
             "result_image_b64": f"data:image/jpeg;base64,{img_b64}"
         }

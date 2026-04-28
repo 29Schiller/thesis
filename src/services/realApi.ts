@@ -10,14 +10,12 @@ const MODEL_MAP: Record<string, { s1: string; s2: string }> = {
   pspnet:    { s1: 'DeepLabV3plus', s2: 'PSPNet' },
 };
 
-export async function analyzeImage(file: File, modelId: string) {
-  const { s1, s2 } = MODEL_MAP[modelId] ?? MODEL_MAP['unet'];
-
+export async function analyzeImage(file: File, s1: string, s2: string, mode: number) {
   const form = new FormData();
   form.append('file', file);
   form.append('model_s1_name', s1);
   form.append('model_s2_name', s2);
-  form.append('mode', '1');
+  form.append('mode', mode.toString());
 
   const res = await fetch(`${API_URL}/api/analyze`, {
     method: 'POST',

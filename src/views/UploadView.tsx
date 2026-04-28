@@ -2,17 +2,18 @@ import { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { UploadCloud, FileImage, Settings, Loader2 } from 'lucide-react';
 import { cn } from '../lib/utils';
-import { MODELS, type ModelSpec } from '../types';
 
 interface UploadViewProps {
-  onProcess: (files: File[], modelId: string) => Promise<void>;
+  onProcess: (files: File[], stage1: string, stage2: string, mode: number) => Promise<void>;
   isProcessing: boolean;
   batchProgress: { current: number; total: number } | null;
 }
 
 export function UploadView({ onProcess, isProcessing, batchProgress }: UploadViewProps) {
   const [files, setFiles] = useState<File[]>([]);
-  const [selectedModel, setSelectedModel] = useState<string>(MODELS[0].id);
+  const [stage1Model, setStage1Model] = useState<string>('DeepLabV3plus');
+  const [stage2Model, setStage2Model] = useState<string>('Unet');
+  const [mode, setMode] = useState<number>(1);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
@@ -33,9 +34,27 @@ export function UploadView({ onProcess, isProcessing, batchProgress }: UploadVie
 
   const handleProcess = () => {
     if (files.length > 0 && !isProcessing) {
-      onProcess(files, selectedModel);
+      onProcess(files, stage1Model, stage2Model, mode);
     }
   };
+
+  const stage1Options = [
+    { id: 'DeepLabV3plus', name: 'DeepLabV3+' }
+  ];
+
+  const stage2Options = [
+    { id: 'Unet', name: 'U-Net' },
+    { id: 'MANet', name: 'MA-Net' },
+    { id: 'FPN', name: 'FPN' },
+    { id: 'PSPNet', name: 'PSPNet' },
+    { id: 'Ensemble', name: 'Meta-Ensemble (9 Models)' }
+  ];
+
+  const modeOptions = [
+    { id: 1, name: 'Normal Visualization' },
+    { id: 2, name: 'SRI (Score-cam)' },
+    { id: 3, name: 'Zone Profiler' },
+  ];
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -130,45 +149,48 @@ export function UploadView({ onProcess, isProcessing, batchProgress }: UploadVie
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-100">Model Selection</h3>
             </div>
             
-            <div className="space-y-3">
-              {MODELS.map((model) => (
-                <label 
-                  key={model.id}
-                  className={cn(
-                    "flex flex-col p-4 rounded-lg border cursor-pointer transition-all",
-                    selectedModel === model.id 
-                      ? "border-emerald-500/50 bg-emerald-500/5 ring-1 ring-emerald-500/50" 
-                      : "border-slate-800 bg-slate-900/50 hover:border-slate-700 hover:bg-slate-800",
-                    isProcessing && "opacity-50 cursor-not-allowed"
-                  )}
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 block">Stage 1 (Lung Seg)</label>
+                <select 
+                  value={stage1Model}
+                  onChange={(e) => setStage1Model(e.target.value)}
+                  disabled={isProcessing}
+                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-hidden focus:ring-1 focus:ring-emerald-500 disabled:opacity-50"
                 >
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <input 
-                        type="radio" 
-                        name="model" 
-                        value={model.id}
-                        checked={selectedModel === model.id}
-                        onChange={() => setSelectedModel(model.id)}
-                        disabled={isProcessing}
-                        className="text-emerald-500 focus:ring-emerald-500/20 bg-slate-800 border-slate-700 w-4 h-4"
-                      />
-                      <span className="font-semibold text-sm text-slate-200">{model.name}</span>
-                    </div>
-                    {model.recommended && (
-                      <span className="text-[10px] font-bold bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded focus:outline-hidden uppercase tracking-wider">
-                        Recommended
-                      </span>
-                    )}
-                  </div>
-                  <div className="pl-6 grid grid-cols-2 gap-x-4 gap-y-1 text-[11px] text-slate-400">
-                    <div>MAE <span className="font-mono text-slate-300">{model.mae}</span></div>
-                    <div>FPS <span className="font-mono text-slate-300">{model.fps}</span></div>
-                    <div>DSC <span className="font-mono text-slate-300">{model.dsc}</span></div>
-                    <div>Size <span className="font-mono text-slate-300">{model.params}</span></div>
-                  </div>
-                </label>
-              ))}
+                  {stage1Options.map(opt => (
+                    <option key={opt.id} value={opt.id}>{opt.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 block">Stage 2 (Disease Seg)</label>
+                <select 
+                  value={stage2Model}
+                  onChange={(e) => setStage2Model(e.target.value)}
+                  disabled={isProcessing}
+                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-hidden focus:ring-1 focus:ring-emerald-500 disabled:opacity-50"
+                >
+                  {stage2Options.map(opt => (
+                    <option key={opt.id} value={opt.id}>{opt.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 block">Analysis Mode</label>
+                <select 
+                  value={mode}
+                  onChange={(e) => setMode(Number(e.target.value))}
+                  disabled={isProcessing}
+                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-hidden focus:ring-1 focus:ring-emerald-500 disabled:opacity-50"
+                >
+                  {modeOptions.map(opt => (
+                    <option key={opt.id} value={opt.id}>{opt.name}</option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
         </div>

@@ -24,7 +24,7 @@ export function DashboardView() {
     setHistory(mockApi.getHistory());
   }, []);
 
-  const handleProcessImage = async (files: File[], modelId: string) => {
+  const handleProcessImage = async (files: File[], stage1Model: string, stage2Model: string, mode: number) => {
     setIsProcessing(true);
     let imagesToProcess: File[] = [];
 
@@ -61,20 +61,29 @@ export function DashboardView() {
       if (!alive) throw new Error('Backend unreachable. Check FastAPI + ngrok.');
 
       for (let i = 0; i < imagesToProcess.length; i++) {
-        const data = await analyzeImage(imagesToProcess[i], modelId);
+        const data = await analyzeImage(imagesToProcess[i], stage1Model, stage2Model, mode);
 
+        const z = data.metrics?.zone_ratios || [0,0,0,0,0,0];
         const result: PredictionResult = {
           id: uuidv4(),
           patient_id: `ANON-${Math.floor(10000 + Math.random() * 90000)}`,
           study_date: new Date().toISOString().split('T')[0],
           image_url: data.result_image_b64,
           severity_score: data.severity_score,
-          zone_scores: { L_upper: 0, L_middle: 0, L_lower: 0, R_upper: 0, R_middle: 0, R_lower: 0 },
+          zone_scores: { 
+             L_upper: Math.round(z[0] * 100) / 100, 
+             L_middle: Math.round(z[1] * 100) / 100, 
+             L_lower: Math.round(z[2] * 100) / 100, 
+             R_upper: Math.round(z[3] * 100) / 100, 
+             R_middle: Math.round(z[4] * 100) / 100, 
+             R_lower: Math.round(z[5] * 100) / 100 
+          },
           statistics: { total_lung_pixels: 0, disease_pixels: 0, involvement_percentage: 0 },
           confidence: 1.0,
           processing_time_ms: 0,
-          model_used: modelId,
+          model_used: stage2Model,
           created_at: new Date().toISOString(),
+          uncertainty: data.metrics?.sri ? parseFloat(data.metrics.sri.toFixed(4)) : undefined,
         };
 
         results.push(result);
