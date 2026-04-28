@@ -1,0 +1,911 @@
+{
+    "Unet": {
+        "All": {
+            "optimal_threshold": 0.27,
+            "best_mae": 0.313,
+            "n_samples": 1364,
+            "sri_mean": 0.8069,
+            "sri_std": 0.2502,
+            "sri_min": 0.1975,
+            "sri_max": 1.0,
+            "zone_mean": [
+                0.1142,
+                0.2264,
+                0.2216,
+                0.0936,
+                0.1985,
+                0.1452
+            ],
+            "zone_std": [
+                0.2087,
+                0.3409,
+                0.3226,
+                0.176,
+                0.2835,
+                0.2161
+            ],
+            "zone_labels": [
+                "L-Upper",
+                "L-Mid",
+                "L-Lower",
+                "R-Upper",
+                "R-Mid",
+                "R-Lower"
+            ]
+        },
+        "COVID-19": {
+            "optimal_threshold": 0.27,
+            "best_mae": 0.7293,
+            "n_samples": 580,
+            "sri_mean": 0.5481,
+            "sri_std": 0.1737,
+            "sri_min": 0.1975,
+            "sri_max": 1.0,
+            "zone_mean": [
+                0.2684,
+                0.5314,
+                0.5203,
+                0.2201,
+                0.4656,
+                0.339
+            ],
+            "zone_std": [
+                0.2472,
+                0.3331,
+                0.2984,
+                0.2121,
+                0.2541,
+                0.209
+            ],
+            "zone_labels": [
+                "L-Upper",
+                "L-Mid",
+                "L-Lower",
+                "R-Upper",
+                "R-Mid",
+                "R-Lower"
+            ]
+        },
+        "Normal": {
+            "optimal_threshold": 0.59,
+            "best_mae": 0.0,
+            "n_samples": 784,
+            "sri_mean": 0.9988,
+            "sri_std": 0.0156,
+            "sri_min": 0.658,
+            "sri_max": 1.0,
+            "zone_mean": [
+                0.0001,
+                0.0008,
+                0.0007,
+                0.0,
+                0.0008,
+                0.0018
+            ],
+            "zone_std": [
+                0.0038,
+                0.021,
+                0.0186,
+                0.0,
+                0.012,
+                0.0242
+            ],
+            "zone_labels": [
+                "L-Upper",
+                "L-Mid",
+                "L-Lower",
+                "R-Upper",
+                "R-Mid",
+                "R-Lower"
+            ]
+        }
+    },
+    "Unetplusplus": {
+        "All": {
+            "optimal_threshold": 0.36,
+            "best_mae": 0.5301,
+            "n_samples": 1364,
+            "sri_mean": 0.7803,
+            "sri_std": 0.2715,
+            "sri_min": 0.1016,
+            "sri_max": 1.0,
+            "zone_mean": [
+                0.176,
+                0.2414,
+                0.2426,
+                0.1293,
+                0.2046,
+                0.154
+            ],
+            "zone_std": [
+                0.2671,
+                0.3354,
+                0.326,
+                0.2215,
+                0.2927,
+                0.2244
+            ],
+            "zone_labels": [
+                "L-Upper",
+                "L-Mid",
+                "L-Lower",
+                "R-Upper",
+                "R-Mid",
+                "R-Lower"
+            ]
+        },
+        "COVID-19": {
+            "optimal_threshold": 0.36,
+            "best_mae": 1.0966,
+            "n_samples": 580,
+            "sri_mean": 0.5359,
+            "sri_std": 0.212,
+            "sri_min": 0.1016,
+            "sri_max": 1.0,
+            "zone_mean": [
+                0.3795,
+                0.5331,
+                0.5412,
+                0.2873,
+                0.4651,
+                0.3473
+            ],
+            "zone_std": [
+                0.2868,
+                0.3211,
+                0.2892,
+                0.2588,
+                0.2806,
+                0.2227
+            ],
+            "zone_labels": [
+                "L-Upper",
+                "L-Mid",
+                "L-Lower",
+                "R-Upper",
+                "R-Mid",
+                "R-Lower"
+            ]
+        },
+        "Normal": {
+            "optimal_threshold": 0.88,
+            "best_mae": 0.0,
+            "n_samples": 784,
+            "sri_mean": 0.9795,
+            "sri_std": 0.0794,
+            "sri_min": 0.1972,
+            "sri_max": 1.0,
+            "zone_mean": [
+                0.0254,
+                0.0256,
+                0.0217,
+                0.0124,
+                0.012,
+                0.011
+            ],
+            "zone_std": [
+                0.0997,
+                0.0997,
+                0.091,
+                0.0608,
+                0.0591,
+                0.053
+            ],
+            "zone_labels": [
+                "L-Upper",
+                "L-Mid",
+                "L-Lower",
+                "R-Upper",
+                "R-Mid",
+                "R-Lower"
+            ]
+        }
+    },
+    "DeepLabV3": {
+        "All": {
+            "optimal_threshold": 0.01,
+            "best_mae": 1.618,
+            "n_samples": 1364,
+            "sri_mean": 1.0,
+            "sri_std": 0.0,
+            "sri_min": 1.0,
+            "sri_max": 1.0,
+            "zone_mean": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "zone_std": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "zone_labels": [
+                "L-Upper",
+                "L-Mid",
+                "L-Lower",
+                "R-Upper",
+                "R-Mid",
+                "R-Lower"
+            ]
+        },
+        "COVID-19": {
+            "optimal_threshold": 0.0,
+            "best_mae": 2.1948,
+            "n_samples": 580,
+            "sri_mean": 0.0,
+            "sri_std": 0.0,
+            "sri_min": 0.0,
+            "sri_max": 0.0,
+            "zone_mean": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "zone_std": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "zone_labels": [
+                "L-Upper",
+                "L-Mid",
+                "L-Lower",
+                "R-Upper",
+                "R-Mid",
+                "R-Lower"
+            ]
+        },
+        "Normal": {
+            "optimal_threshold": 0.01,
+            "best_mae": 0.0,
+            "n_samples": 784,
+            "sri_mean": 1.0,
+            "sri_std": 0.0,
+            "sri_min": 1.0,
+            "sri_max": 1.0,
+            "zone_mean": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "zone_std": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "zone_labels": [
+                "L-Upper",
+                "L-Mid",
+                "L-Lower",
+                "R-Upper",
+                "R-Mid",
+                "R-Lower"
+            ]
+        }
+    },
+    "DeepLabV3plus": {
+        "All": {
+            "optimal_threshold": 0.26,
+            "best_mae": 0.3864,
+            "n_samples": 1364,
+            "sri_mean": 0.829,
+            "sri_std": 0.2332,
+            "sri_min": 0.2148,
+            "sri_max": 1.0,
+            "zone_mean": [
+                0.1328,
+                0.2392,
+                0.2397,
+                0.0954,
+                0.1812,
+                0.1302
+            ],
+            "zone_std": [
+                0.2435,
+                0.3615,
+                0.3457,
+                0.1917,
+                0.2799,
+                0.2074
+            ],
+            "zone_labels": [
+                "L-Upper",
+                "L-Mid",
+                "L-Lower",
+                "R-Upper",
+                "R-Mid",
+                "R-Lower"
+            ]
+        },
+        "COVID-19": {
+            "optimal_threshold": 0.26,
+            "best_mae": 0.9,
+            "n_samples": 580,
+            "sri_mean": 0.6015,
+            "sri_std": 0.1919,
+            "sri_min": 0.2148,
+            "sri_max": 1.0,
+            "zone_mean": [
+                0.3121,
+                0.5606,
+                0.5614,
+                0.2242,
+                0.4243,
+                0.3044
+            ],
+            "zone_std": [
+                0.289,
+                0.3558,
+                0.3167,
+                0.2399,
+                0.2844,
+                0.2191
+            ],
+            "zone_labels": [
+                "L-Upper",
+                "L-Mid",
+                "L-Lower",
+                "R-Upper",
+                "R-Mid",
+                "R-Lower"
+            ]
+        },
+        "Normal": {
+            "optimal_threshold": 0.68,
+            "best_mae": 0.0,
+            "n_samples": 784,
+            "sri_mean": 0.9985,
+            "sri_std": 0.0159,
+            "sri_min": 0.7195,
+            "sri_max": 1.0,
+            "zone_mean": [
+                0.0001,
+                0.0014,
+                0.0017,
+                0.0002,
+                0.0014,
+                0.0013
+            ],
+            "zone_std": [
+                0.0027,
+                0.0277,
+                0.0223,
+                0.0039,
+                0.0197,
+                0.0158
+            ],
+            "zone_labels": [
+                "L-Upper",
+                "L-Mid",
+                "L-Lower",
+                "R-Upper",
+                "R-Mid",
+                "R-Lower"
+            ]
+        }
+    },
+    "FPN": {
+        "All": {
+            "optimal_threshold": 0.21,
+            "best_mae": 0.3622,
+            "n_samples": 1364,
+            "sri_mean": 0.7915,
+            "sri_std": 0.2549,
+            "sri_min": 0.1717,
+            "sri_max": 1.0,
+            "zone_mean": [
+                0.1159,
+                0.2246,
+                0.2303,
+                0.0869,
+                0.1843,
+                0.1111
+            ],
+            "zone_std": [
+                0.2102,
+                0.33,
+                0.3113,
+                0.1657,
+                0.2563,
+                0.17
+            ],
+            "zone_labels": [
+                "L-Upper",
+                "L-Mid",
+                "L-Lower",
+                "R-Upper",
+                "R-Mid",
+                "R-Lower"
+            ]
+        },
+        "COVID-19": {
+            "optimal_threshold": 0.21,
+            "best_mae": 0.7931,
+            "n_samples": 580,
+            "sri_mean": 0.5259,
+            "sri_std": 0.161,
+            "sri_min": 0.1717,
+            "sri_max": 1.0,
+            "zone_mean": [
+                0.2713,
+                0.5248,
+                0.529,
+                0.203,
+                0.4266,
+                0.2558
+            ],
+            "zone_std": [
+                0.2481,
+                0.3128,
+                0.2623,
+                0.2024,
+                0.2251,
+                0.1737
+            ],
+            "zone_labels": [
+                "L-Upper",
+                "L-Mid",
+                "L-Lower",
+                "R-Upper",
+                "R-Mid",
+                "R-Lower"
+            ]
+        },
+        "Normal": {
+            "optimal_threshold": 0.69,
+            "best_mae": 0.0,
+            "n_samples": 784,
+            "sri_mean": 0.9945,
+            "sri_std": 0.0303,
+            "sri_min": 0.5259,
+            "sri_max": 1.0,
+            "zone_mean": [
+                0.001,
+                0.0024,
+                0.0093,
+                0.001,
+                0.005,
+                0.0041
+            ],
+            "zone_std": [
+                0.0169,
+                0.0323,
+                0.0527,
+                0.0109,
+                0.0351,
+                0.0322
+            ],
+            "zone_labels": [
+                "L-Upper",
+                "L-Mid",
+                "L-Lower",
+                "R-Upper",
+                "R-Mid",
+                "R-Lower"
+            ]
+        }
+    },
+    "Linknet": {
+        "All": {
+            "optimal_threshold": 0.15,
+            "best_mae": 0.4062,
+            "n_samples": 1364,
+            "sri_mean": 0.7592,
+            "sri_std": 0.1932,
+            "sri_min": 0.2488,
+            "sri_max": 1.0,
+            "zone_mean": [
+                0.07,
+                0.1886,
+                0.235,
+                0.0714,
+                0.1764,
+                0.17
+            ],
+            "zone_std": [
+                0.1562,
+                0.2901,
+                0.3106,
+                0.1253,
+                0.2591,
+                0.2352
+            ],
+            "zone_labels": [
+                "L-Upper",
+                "L-Mid",
+                "L-Lower",
+                "R-Upper",
+                "R-Mid",
+                "R-Lower"
+            ]
+        },
+        "COVID-19": {
+            "optimal_threshold": 0.05,
+            "best_mae": 0.8983,
+            "n_samples": 580,
+            "sri_mean": 0.5764,
+            "sri_std": 0.1469,
+            "sri_min": 0.1753,
+            "sri_max": 1.0,
+            "zone_mean": [
+                0.1587,
+                0.4068,
+                0.5153,
+                0.1424,
+                0.3852,
+                0.3774
+            ],
+            "zone_std": [
+                0.2087,
+                0.3375,
+                0.2943,
+                0.1652,
+                0.283,
+                0.2327
+            ],
+            "zone_labels": [
+                "L-Upper",
+                "L-Mid",
+                "L-Lower",
+                "R-Upper",
+                "R-Mid",
+                "R-Lower"
+            ]
+        },
+        "Normal": {
+            "optimal_threshold": 0.66,
+            "best_mae": 0.0,
+            "n_samples": 784,
+            "sri_mean": 0.9705,
+            "sri_std": 0.0329,
+            "sri_min": 0.555,
+            "sri_max": 1.0,
+            "zone_mean": [
+                0.0044,
+                0.0272,
+                0.0276,
+                0.0188,
+                0.022,
+                0.0166
+            ],
+            "zone_std": [
+                0.0113,
+                0.0298,
+                0.0509,
+                0.0256,
+                0.0381,
+                0.0285
+            ],
+            "zone_labels": [
+                "L-Upper",
+                "L-Mid",
+                "L-Lower",
+                "R-Upper",
+                "R-Mid",
+                "R-Lower"
+            ]
+        }
+    },
+    "PSPNet": {
+        "All": {
+            "optimal_threshold": 0.33,
+            "best_mae": 0.4956,
+            "n_samples": 1364,
+            "sri_mean": 0.7806,
+            "sri_std": 0.2582,
+            "sri_min": 0.2209,
+            "sri_max": 1.0,
+            "zone_mean": [
+                0.1213,
+                0.2415,
+                0.214,
+                0.1242,
+                0.2316,
+                0.1372
+            ],
+            "zone_std": [
+                0.2225,
+                0.324,
+                0.2822,
+                0.2191,
+                0.3048,
+                0.2159
+            ],
+            "zone_labels": [
+                "L-Upper",
+                "L-Mid",
+                "L-Lower",
+                "R-Upper",
+                "R-Mid",
+                "R-Lower"
+            ]
+        },
+        "COVID-19": {
+            "optimal_threshold": 0.21,
+            "best_mae": 1.0741,
+            "n_samples": 580,
+            "sri_mean": 0.5458,
+            "sri_std": 0.1738,
+            "sri_min": 0.1695,
+            "sri_max": 1.0,
+            "zone_mean": [
+                0.2828,
+                0.5402,
+                0.4735,
+                0.2872,
+                0.5173,
+                0.3121
+            ],
+            "zone_std": [
+                0.2663,
+                0.2934,
+                0.2516,
+                0.257,
+                0.264,
+                0.2326
+            ],
+            "zone_labels": [
+                "L-Upper",
+                "L-Mid",
+                "L-Lower",
+                "R-Upper",
+                "R-Mid",
+                "R-Lower"
+            ]
+        },
+        "Normal": {
+            "optimal_threshold": 0.57,
+            "best_mae": 0.0,
+            "n_samples": 784,
+            "sri_mean": 0.9778,
+            "sri_std": 0.0652,
+            "sri_min": 0.5328,
+            "sri_max": 1.0,
+            "zone_mean": [
+                0.0017,
+                0.0206,
+                0.022,
+                0.0036,
+                0.0204,
+                0.0078
+            ],
+            "zone_std": [
+                0.0108,
+                0.0645,
+                0.0707,
+                0.0212,
+                0.0711,
+                0.0409
+            ],
+            "zone_labels": [
+                "L-Upper",
+                "L-Mid",
+                "L-Lower",
+                "R-Upper",
+                "R-Mid",
+                "R-Lower"
+            ]
+        }
+    },
+    "PAN": {
+        "All": {
+            "optimal_threshold": 0.42,
+            "best_mae": 0.5946,
+            "n_samples": 1364,
+            "sri_mean": 0.7438,
+            "sri_std": 0.2748,
+            "sri_min": 0.1502,
+            "sri_max": 1.0,
+            "zone_mean": [
+                0.1282,
+                0.2653,
+                0.3004,
+                0.1021,
+                0.2597,
+                0.2151
+            ],
+            "zone_std": [
+                0.2196,
+                0.3412,
+                0.3317,
+                0.1746,
+                0.3071,
+                0.2532
+            ],
+            "zone_labels": [
+                "L-Upper",
+                "L-Mid",
+                "L-Lower",
+                "R-Upper",
+                "R-Mid",
+                "R-Lower"
+            ]
+        },
+        "COVID-19": {
+            "optimal_threshold": 0.31,
+            "best_mae": 1.1172,
+            "n_samples": 580,
+            "sri_mean": 0.5047,
+            "sri_std": 0.1511,
+            "sri_min": 0.1721,
+            "sri_max": 1.0,
+            "zone_mean": [
+                0.2986,
+                0.5906,
+                0.6186,
+                0.2343,
+                0.5546,
+                0.4364
+            ],
+            "zone_std": [
+                0.2499,
+                0.2791,
+                0.2149,
+                0.2,
+                0.2233,
+                0.2065
+            ],
+            "zone_labels": [
+                "L-Upper",
+                "L-Mid",
+                "L-Lower",
+                "R-Upper",
+                "R-Mid",
+                "R-Lower"
+            ]
+        },
+        "Normal": {
+            "optimal_threshold": 0.87,
+            "best_mae": 0.0,
+            "n_samples": 784,
+            "sri_mean": 0.9638,
+            "sri_std": 0.0944,
+            "sri_min": 0.4503,
+            "sri_max": 1.0,
+            "zone_mean": [
+                0.0021,
+                0.0247,
+                0.065,
+                0.0043,
+                0.0415,
+                0.0515
+            ],
+            "zone_std": [
+                0.0172,
+                0.0936,
+                0.1641,
+                0.0305,
+                0.1235,
+                0.1302
+            ],
+            "zone_labels": [
+                "L-Upper",
+                "L-Mid",
+                "L-Lower",
+                "R-Upper",
+                "R-Mid",
+                "R-Lower"
+            ]
+        }
+    },
+    "MAnet": {
+        "All": {
+            "optimal_threshold": 0.25,
+            "best_mae": 0.3849,
+            "n_samples": 1364,
+            "sri_mean": 0.7917,
+            "sri_std": 0.2644,
+            "sri_min": 0.1863,
+            "sri_max": 1.0,
+            "zone_mean": [
+                0.1149,
+                0.2445,
+                0.2433,
+                0.092,
+                0.1812,
+                0.1135
+            ],
+            "zone_std": [
+                0.2034,
+                0.3448,
+                0.3289,
+                0.1663,
+                0.2562,
+                0.1749
+            ],
+            "zone_labels": [
+                "L-Upper",
+                "L-Mid",
+                "L-Lower",
+                "R-Upper",
+                "R-Mid",
+                "R-Lower"
+            ]
+        },
+        "COVID-19": {
+            "optimal_threshold": 0.25,
+            "best_mae": 0.881,
+            "n_samples": 580,
+            "sri_mean": 0.5169,
+            "sri_std": 0.1765,
+            "sri_min": 0.1863,
+            "sri_max": 1.0,
+            "zone_mean": [
+                0.2692,
+                0.57,
+                0.5674,
+                0.216,
+                0.4245,
+                0.2657
+            ],
+            "zone_std": [
+                0.2362,
+                0.3057,
+                0.2645,
+                0.1956,
+                0.2257,
+                0.1773
+            ],
+            "zone_labels": [
+                "L-Upper",
+                "L-Mid",
+                "L-Lower",
+                "R-Upper",
+                "R-Mid",
+                "R-Lower"
+            ]
+        },
+        "Normal": {
+            "optimal_threshold": 0.56,
+            "best_mae": 0.0,
+            "n_samples": 784,
+            "sri_mean": 0.9969,
+            "sri_std": 0.0261,
+            "sri_min": 0.5458,
+            "sri_max": 1.0,
+            "zone_mean": [
+                0.0008,
+                0.0037,
+                0.0036,
+                0.0002,
+                0.0012,
+                0.0009
+            ],
+            "zone_std": [
+                0.01,
+                0.0358,
+                0.0351,
+                0.0056,
+                0.0184,
+                0.0119
+            ],
+            "zone_labels": [
+                "L-Upper",
+                "L-Mid",
+                "L-Lower",
+                "R-Upper",
+                "R-Mid",
+                "R-Lower"
+            ]
+        }
+    }
+}
