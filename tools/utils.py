@@ -151,6 +151,49 @@ def map_mask_to_original(cropped_mask, crop_coords, original_shape):
     full_mask[y_min:y_max+1, x_min:x_max+1] = cropped_mask
     return full_mask
 
+
+# =====================================================================
+# CONTRIBUTION B — SCORE RELIABILITY INDEX (SRI)
+# =====================================================================
+def compute_sri(ratios, threshold):
+    """
+    [CONTRIBUTION B — Score Reliability Index]
+
+    Đo lường mức độ "chắc chắn" của toàn bộ quyết định scoring dựa trên
+    khoảng cách trung bình từ mỗi zone đến ranh giới quyết định (threshold).
+
+    SRI ∈ [0.0, 1.0]:
+        0.0 → tất cả các zones nằm đúng trên ngưỡng (tối đa bất định)
+        1.0 → tất cả các zones ở cực trị 0.0 hoặc 1.0 (tối đa chắc chắn)
+
+    Công thức (cho mỗi zone i):
+        max_dist_i = (1 - threshold)  nếu ratio[i] >= threshold
+                   = threshold        nếu ratio[i] <  threshold
+        d_i = |ratio[i] - threshold| / max_dist_i   ∈ [0.0, 1.0]
+
+        SRI = mean(d_i) trên 6 zones
+
+    Tính chất:
+        - Liên tục và đối xứng quanh threshold
+        - Không phụ thuộc giá trị tuyệt đối của score
+        - Model-agnostic: áp dụng được cho mọi model sau khi có ratios
+
+    Args:
+        ratios    (List[float]): 6 Coverage Ratios ∈ [0.0, 1.0]
+        threshold (float)      : Ngưỡng quyết định ∈ (0.0, 1.0)
+
+    Returns:
+        float: SRI ∈ [0.0, 1.0], làm tròn 4 chữ số thập phân
+    """
+    distances = []
+    for r in ratios:
+        max_dist = (1.0 - threshold) if r >= threshold else threshold
+        if max_dist < 1e-8:
+            distances.append(1.0)
+        else:
+            distances.append(abs(r - threshold) / max_dist)
+    return round(float(np.mean(distances)), 4)
+
 # =====================================================================
 # 3. TRỰC QUAN HÓA (VISUALIZATION)
 # =====================================================================

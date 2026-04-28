@@ -94,18 +94,52 @@ def predict_mask(model, tensor_img, original_size):
         # Nếu model trả về tuple (ví dụ có classification head phụ), lấy phần tử đầu tiên
         if isinstance(pred, tuple):
              pred = pred[0]
-             
+
         # Chuẩn hóa về xác suất [0.0, 1.0] nếu output là Logits
         if pred.max() > 1.0 or pred.min() < 0.0:
             prob = torch.sigmoid(pred)
         else:
             prob = pred
-            
+
         # Áp dụng ngưỡng 0.5 để tạo mask nhị phân (True/False), sau đó ép kiểu thành 0 và 1
         mask = (prob > 0.5).squeeze().cpu().numpy().astype(np.uint8)
-        
+
     # Resize mask ngược trở lại kích thước thật của ảnh (w, h)
     # Dùng cv2.INTER_NEAREST để đảm bảo giá trị pixel không bị nội suy thành số thập phân
     mask_resized = cv2.resize(mask, original_size, interpolation=cv2.INTER_NEAREST)
-    
+
     return mask_resized
+
+
+def predict_prob_map(model, tensor_img, original_size):
+    """
+    [CONTRIBUTION A — Spatial Disagreement Map]
+    Chạy tensor qua model và trả về BẢN ĐỒ XÁC SUẤT liên tục [0.0, 1.0]
+    thay vì mask nhị phân. Dùng cho việc tính ensemble variance.
+
+    Args:
+        model: PyTorch model đã load và ở chế độ eval().
+        tensor_img: Tensor [1, C, H, W] đã được normalize.
+        original_size: Tuple (width, height) — kích thước ảnh gốc để resize về.
+
+    Returns:
+        prob_map (np.ndarray, float32): Mảng 2D giá trị [0.0, 1.0], shape (H, W).
+    """
+    with torch.no_grad():
+        pred = model(tensor_img)
+        if isinstance(pred, tuple):
+            pred = pred[0]
+
+        # Chuẩn hóa về xác suất liên tục — KHÔNG áp dụng ngưỡng
+        if pred.max() > 1.0 or pred.min() < 0.0:
+            prob = torch.sigmoid(pred)
+        else:
+            prob = pred
+
+        # Squeeze về 2D numpy array float32
+        prob_map = prob.squeeze().cpu().numpy().astype(np.float32)
+
+    # Resize về kích thước ảnh gốc — dùng INTER_LINEAR để giữ giá trị liên tục
+    prob_map_resized = cv2.resize(prob_map, original_size, interpolation=cv2.INTER_LINEAR)
+
+    return prob_map_resized
